@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meridian — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:    #0e0e0e;
+      --paper:  #f5f0e8;
+      --warm:   #c8a96e;
+      --muted:  #9e9484;
+      --faint:  #e8e2d6;
+      --rule:   #d4cdc0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(245, 240, 232, 0.85);
+      backdrop-filter: blur(12px);
+      border-color: var(--rule);
+    }
+    .nav-logo {
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .nav-links {
+      display: flex; gap: 2.4rem; list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--muted);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: var(--warm);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 6rem 3rem 4rem;
+      gap: 4rem;
+    }
+    .hero-text { max-width: 560px; }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm);
+      margin-bottom: 1.8rem;
+      opacity: 0; animation: fadeUp 0.7s 0.2s ease forwards;
+    }
+    .hero-title {
+      font-size: clamp(3.2rem, 6vw, 6rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.8rem;
+      opacity: 0; animation: fadeUp 0.8s 0.35s ease forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--warm);
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 1.2rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.8s 0.65s ease forwards;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--warm); transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.25s, background 0.25s, transform 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--ink); background: var(--faint); transform: translateY(-2px); }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      height: 480px;
+      opacity: 0; animation: fadeIn 1.2s 0.4s ease forwards;
+    }
+    .hero-card {
+      position: absolute;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 2.4rem;
+      font-size: 0.85rem;
+      line-height: 1.9;
+    }
+    .hero-card:nth-child(1) {
+      top: 0; right: 20px;
+      width: 280px;
+    }
+    .hero-card:nth-child(2) {
+      top: 140px; right: 200px;
+      width: 240px;
+      background: var(--warm);
+      color: var(--ink);
+    }
+    .hero-card:nth-child(3) {
+      bottom: 40px; right: 40px;
+      width: 200px;
+      background: var(--faint);
+      color: var(--ink);
+      border: 1px solid var(--rule);
+    }
+    .card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      margin-bottom: 0.7rem;
+    }
+    .card-value {
+      font-size: 2.4rem;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    /* ── SECTION BASE ── */
+    section { position: relative; z-index: 1; }
+
+    .section-header {
+      display: flex; align-items: baseline; gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 300;
+    }
+    .section-title em { font-style: italic; color: var(--warm); }
+    .section-rule {
+      flex: 1; height: 1px;
+      background: var(--rule);
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 7rem 3rem;
+      border-top: 1px solid var(--rule);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+    .feature-item {
+      padding: 2.8rem 2.4rem;
+      background: var(--faint);
+      transition: background 0.25s;
+      cursor: default;
+    }
+    .feature-item:hover { background: var(--ink); color: var(--paper); }
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 1.4rem;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .feature-item:hover .feature-icon { transform: scale(1.15); }
+    .feature-name {
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 0.8rem;
+    }
+    .feature-name em { font-style: italic; color: var(--warm); }
+    .feature-item:hover .feature-name em { color: var(--warm); }
+    .feature-desc {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+    .feature-item:hover .feature-desc { color: rgba(245,240,232,0.65); }
+
+    /* ── PAGES / LINKS ── */
+    .pages {
+      padding: 7rem 3rem;
+      border-top: 1px solid var(--rule);
+    }
+    .pages-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+    .page-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2rem 2.4rem;
+      background: var(--faint);
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.25s, padding-left 0.3s;
+      group: true;
+    }
+    .page-link:hover { background: var(--ink); color: var(--paper); padding-left: 3rem; }
+    .page-link-info {}
+    .page-link-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+    .page-link:hover .page-link-label { color: rgba(245,240,232,0.5); }
+    .page-link-name {
+      font-size: 1.5rem;
+      font-weight: 300;
+    }
+    .page-link-arrow {
+      font-size: 1.6rem;
+      font-weight: 300;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+    .page-link:hover .page-link-arrow { transform: translateX(8px); }
+
+    /* ── TESTIMONIAL / QUOTE ── */
+    .quote-band {
+      padding: 7rem 3rem;
+      background: var(--ink);
+      color: var(--paper);
+      border-top: 1px solid var(--rule);
+      text-align: center;
+    }
+    .quote-text {
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.5;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    .quote-author {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm);
+    }
+
+    /* ── STATS ── */
+    .stats {
+      padding: 7rem 3rem;
+      border-top: 1px solid var(--rule);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+    .stat-item {
+      padding: 2.4rem 2rem;
+      background: var(--faint);
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 3.2rem;
+      font-weight: 300;
+      color: var(--warm);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      padding: 3rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-brand {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .footer-links {
+      display: flex; gap: 2rem; list-style: none; flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1.4rem; }
+      .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; }
+      .hero-visual { display: none; }
+      .features { padding: 5rem 1.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .pages { padding: 5rem 1.5rem; }
+      .pages-list { grid-template-columns: 1fr; }
+      .stats { padding: 5rem 1.5rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .quote-band { padding: 5rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">Meridian</a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="work.html">Work</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Est. 2024 · Design &amp; Strategy</p>
+      <h1 class="hero-title">
+        Where ideas<br>find their <em>form</em>
+      </h1>
+      <p class="hero-sub">
+        Meridian is a creative studio crafting digital experiences, brand identities,
+        and thoughtful design for forward-thinking clients.
+      </p>
+      <div class="hero-actions">
+        <a href="work.html" class="btn-primary">View our work</a>
+        <a href="contact.html" class="btn-outline">Start a project</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="card-label">Projects completed</div>
+        <div class="card-value">148</div>
+      </div>
+      <div class="hero-card">
+        <div class="card-label">Client satisfaction</div>
+        <div class="card-value">98%</div>
+      </div>
+      <div class="hero-card">
+        <div class="card-label">Years of craft</div>
+        <div class="card-value">12</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">What we <em>do</em></h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-item reveal">
+        <span class="feature-icon">◈</span>
+        <h3 class="feature-name">Brand <em>Identity</em></h3>
+        <p class="feature-desc">Logos, visual systems, and guidelines that give your company a recognizable presence across every touchpoint.</p>
+      </div>
+      <div class="feature-item reveal" style="transition-delay:0.1s">
+        <span class="feature-icon">⬡</span>
+        <h3 class="feature-name">Web <em>Design</em></h3>
+        <p class="feature-desc">Pixel-perfect interfaces and seamless user experiences that convert visitors into loyal customers.</p>
+      </div>
+      <div class="feature-item reveal" style="transition-delay:0.2s">
+        <span class="feature-icon">◎</span>
+        <h3 class="feature-name">Digital <em>Strategy</em></h3>
+        <p class="feature-desc">Research-backed roadmaps that align your digital presence with measurable business outcomes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">By the <em>numbers</em></h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num">148</div>
+        <div class="stat-label">Projects delivered</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.1s">
+        <div class="stat-num">62</div>
+        <div class="stat-label">Happy clients</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.2s">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Awards won</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.3s">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Countries served</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGES / LINKS -->
+  <section class="pages">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Explore <em>further</em></h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="pages-list">
+      <a href="about.html" class="page-link reveal">
+        <div class="page-link-info">
+          <div class="page-link-label">Our story</div>
+          <div class="page-link-name">About us</div>
+        </div>
+        <span class="page-link-arrow">→</span>
+      </a>
+      <a href="work.html" class="page-link reveal" style="transition-delay:0.05s">
+        <div class="page-link-info">
+          <div class="page-link-label">Portfolio</div>
+          <div class="page-link-name">Our work</div>
+        </div>
+        <span class="page-link-arrow">→</span>
+      </a>
+      <a href="services.html" class="page-link reveal" style="transition-delay:0.1s">
+        <div class="page-link-info">
+          <div class="page-link-label">What we offer</div>
+          <div class="page-link-name">Services</div>
+        </div>
+        <span class="page-link-arrow">→</span>
+      </a>
+      <a href="journal.html" class="page-link reveal" style="transition-delay:0.15s">
+        <div class="page-link-info">
+          <div class="page-link-label">Ideas &amp; insights</div>
+          <div class="page-link-name">Journal</div>
+        </div>
+        <span class="page-link-arrow">→</span>
+      </a>
+      <a href="contact.html" class="page-link reveal" style="transition-delay:0.2s">
+        <div class="page-link-info">
+          <div class="page-link-label">Get in touch</div>
+          <div class="page-link-name">Contact</div>
+        </div>
+        <span class="page-link-arrow">→</span>
+      </a>
+      <a href="faq.html" class="page-link reveal" style="transition-delay:0.25s">
+        <div class="page-link-info">
+          <div class="page-link-label">Common questions</div>
+          <div class="page-link-name">FAQ</div>
+        </div>
+        <span class="page-link-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-band">
+    <p class="quote-text reveal">
+      "Great design doesn't just solve problems — it makes the solution feel inevitable."
+    </p>
+    <p class="quote-author reveal" style="transition-delay:0.15s">— The Meridian Manifesto</p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-brand">Meridian</span>
+    <ul class="footer-links">
+      <li><a href="about.html">About</a></li>
+      <li><a href="work.html">Work</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+    </ul>
+    <span class="footer-copy">© 2024 Meridian Studio. All rights reserved.</span>
+  </footer>
+
+  <script>
+    // Sticky nav on scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
